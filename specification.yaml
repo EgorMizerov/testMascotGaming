@@ -1,0 +1,245 @@
+openapi: 3.0.3
+info:
+  title: Test Mascot Gaming
+  description: Test Mascot Gaming
+  version: 1.0.0
+servers:
+  - url: 'https'
+paths:
+  /api/v1/auth/sign-up:
+    post:
+      tags:
+        - auth
+      summary: Create user
+      description: null
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  default: "egor"
+                password:
+                  type: string
+                  default: "qwerty"
+
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    default: "user registered"
+        '400':
+          description: BadRequest
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    default: "invalid input body"
+
+
+  /api/v1/auth/sign-in:
+    post:
+      tags:
+        - auth
+      summary: Authorization user
+      description: null
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  default: "egor"
+                password:
+                  type: string
+                  default: "qwerty"
+
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access_token:
+                    type: string
+                    default: 'qwqwq.fqqwfs.sqsfs'
+                  refresh_token:
+                    type: string
+                    default: "dsggdsh.sdsdhs.hdshs"
+        '400':
+          description: BadRequest
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    default: invalid input body
+
+
+  /api/v1/users/balance/:
+    get:
+      security:
+        - ApiKeyAuth: []
+      tags:
+        - balance
+      summary: Get user balance
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  balance:
+                    type: number
+                    default: 100.50
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    default: you are not authorized
+
+
+  /api/v1/users/balance/top-up:
+    post:
+      security:
+        - ApiKeyAuth: []
+      tags:
+        - balance
+      summary: Top up user balance
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sum:
+                  type: number
+                  default: 200.75
+
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    default: balance replenshed
+        '400':
+          description: BadRequest
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    default: invalid input body
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    default: you are not authorized
+
+  /api/v1/users/balance/withdraw:
+    post:
+      security:
+        - ApiKeyAuth: [ ]
+      tags:
+        - balance
+      summary: Withdraw user balance
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sum:
+                  type: number
+                  default: 200.75
+
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    default: balance replenshed
+        '400':
+          description: BadRequest
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    default: invalid input body
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    default: you are not authorized
+
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
+
+  schemas:
+    User:
+      type: object
+      properties:
+        uuid:
+          type: string
+        username:
+          type: string
+        password:
+          type: string

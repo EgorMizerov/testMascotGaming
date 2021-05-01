@@ -1,0 +1,15 @@
+# Database Settings
+db:
+  database: "postgres"
+  host: "localhost"
+  port: "5432"
+  username: "postgres"
+  sslmode: "disable"
+
+# Server Settings
+server:
+  port: "8000"
+
+# Logger Settings
+logger:
+  level: "debug"
