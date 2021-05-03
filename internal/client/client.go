@@ -144,3 +144,39 @@ func (c *Client) StartSession(playerId, gameId string) (string, string, error) {
 
 	return SSResp.Result.SessionId, SSResp.Result.SessionUrl, err
 }
+
+func (c *Client) StartDemoSession(bankGroupId, gameId string) (string, string, error) {
+	query := fmt.Sprintf(`{
+		"jsonrpc": "2.0",
+		"method": "Session.CreateDemo",
+		"id": 321864203,
+		"params": {
+			"BankGroupId": "%s",
+			"GameId": "%s",
+			"StartBalance": 10000
+		}
+	}`, bankGroupId, gameId)
+	fmt.Println(query)
+
+	req, err := http.NewRequest("POST", c.api, strings.NewReader(query))
+	if err != nil {
+		return "", "", err
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Accept", "application/json")
+
+	resp, err := c.httpClient.Do(req)
+	if err != nil {
+		return "", "", err
+	}
+
+	r, _ := ioutil.ReadAll(resp.Body)
+
+	fmt.Println(string(r))
+
+	var SSResp domain.StartSessionResponse
+	err = json.NewDecoder(resp.Body).Decode(&SSResp)
+
+	return SSResp.Result.SessionId, SSResp.Result.SessionUrl, err
+}

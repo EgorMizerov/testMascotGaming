@@ -12,12 +12,34 @@
 <body>
 
 <div class="container">
-  <div class="username"></div>
-  <button onclick="serverGetGameList()">Click</button>
+  <div class="userdata">
+      <div id="name"></div>
+      <div id="balance"></div>
+      <button onclick="deposit(1000)">Попольнить баланс на 1000р</button>
+  </div>
+  <button onclick="serverGetGameList()">Список игр</button>
 </div>
 
 <script>
   let api = "http://192.168.100.8:8000"
+  getUserData(getCookie("mascot_access_token"))
+
+  function getUserData(token) {
+      let xhr = new XMLHttpRequest()
+
+      xhr.open("GET", api+"/api/users/", false)
+      xhr.setRequestHeader("Authorization", "Bearer "+token)
+      xhr.send()
+
+      if (xhr.status != 200) {
+          alert(xhr.status + ": " + xhr.statusText)
+      } else {
+          resp = JSON.parse(xhr.responseText)
+          alert(resp)
+          document.getElementById("name").innerText = "Имя: " + resp.username
+          document.getElementById("balance").innerText = "Баланс: " + resp.balance
+      }
+  }
 
   function serverGetGameList() {
     let xhr = new XMLHttpRequest()
@@ -45,6 +67,31 @@
     gameBlock.innerText = text
 
     document.body.append(gameBlock)
+  }
+
+  function getCookie(name) {
+      let matches = document.cookie.match(new RegExp(
+          "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+      ));
+      return matches ? decodeURIComponent(matches[1]) : undefined;
+  }
+
+  function deposit(amount) {
+      let xhr = new XMLHttpRequest()
+
+      let body = `{"amount":${amount}}`
+
+      xhr.open("POST", api+"/api/users/balance/deposit")
+      xhr.setRequestHeader("Authorization", "Bearer " + getCookie("mascot_access_token"))
+      xhr.send(body)
+
+      if (xhr.status != 200) {
+          alert(xhr.status + ": " + xhr.statusText)
+          document.location.href = document.location.href
+      } else {
+          alert("Баланс пополнен")
+          document.location.href = document.location.href
+      }
   }
 </script>
 </body>
