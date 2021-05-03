@@ -22,7 +22,6 @@ CREATE TABLE banks
         ON DELETE CASCADE
 );
 
--- TODO: Нужна ли роль учатника банка?
 CREATE TABLE banks_users
 (
     id uuid,

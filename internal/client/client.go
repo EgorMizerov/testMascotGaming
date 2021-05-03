@@ -12,8 +12,6 @@ import (
 	"testMascotGaming/internal/client/domain"
 )
 
-// TODO: Подумать. Стоит ли использовать service, как компонент клиента или лучше их не скрещивать...
-
 type Client struct {
 	httpClient *http.Client
 	api        string

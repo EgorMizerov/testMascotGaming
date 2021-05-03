@@ -21,6 +21,7 @@ type Auth interface {
 }
 
 type Balance interface {
+	GetBalance(id string) (float64, error)
 	Withdraw(id string, amount float64) (float64, error)
 	Deposit(id string, amount float64) (float64, error)
 }
@@ -28,10 +29,12 @@ type Balance interface {
 type Bank interface {
 	CreateBank(userId, currency string) (string, error)
 	GetAllBanks() ([]domain.Bank, error)
+	SetPlayer(userId, username string) error
 }
 
 type Game interface {
-	StartDemoGame(gameId, userId string) (string, string, error)
+	StartDemoGame(gameId string) (string, string, error)
+	StartGame(gameId, playerId string) (string, string, error)
 }
 
 type Service struct {
@@ -44,7 +47,7 @@ type Service struct {
 
 func NewService(repo *repository.Repository, log *zap.Logger, manager auth.TokenManager, client *client.Client) *Service {
 	return &Service{
-		Auth:    NewAuthService(repo.User, log, manager),
+		Auth:    NewAuthService(repo.User, log, manager, client),
 		User:    NewUserService(repo.User, log),
 		Balance: NewBalanceService(repo.Balance),
 		Bank:    NewBankService(repo.Bank, repo.User, client),

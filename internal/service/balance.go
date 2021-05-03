@@ -17,3 +17,7 @@ func (s *BalanceService) Withdraw(id string, amount float64) (float64, error) {
 func (s *BalanceService) Deposit(id string, amount float64) (float64, error) {
 	return s.repo.Deposit(id, amount)
 }
+
+func (s *BalanceService) GetBalance(id string) (float64, error) {
+	return s.repo.GetBalance(id)
+}

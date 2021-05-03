@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/spf13/viper"
 	"testMascotGaming/internal/client"
 	"testMascotGaming/internal/repository"
 )
@@ -14,8 +15,12 @@ func NewGameService(repo repository.Bank, client2 *client.Client) *GameService {
 	return &GameService{repo: repo, client: client2}
 }
 
-func (s *GameService) StartDemoGame(gameId, userId string) (string, string, error) {
-	// TODO: поменять на найти банк по id пользователя
-	banks, _ := s.repo.GetAllBanks()
-	return s.client.StartDemoSession(banks[0].Id, gameId)
+func (s *GameService) StartDemoGame(gameId string) (string, string, error) {
+	bankId := viper.GetString("bankId")
+
+	return s.client.StartDemoSession(bankId, gameId)
+}
+
+func (s *GameService) StartGame(gameId, userId string) (string, string, error) {
+	return s.client.StartSession(userId, gameId)
 }

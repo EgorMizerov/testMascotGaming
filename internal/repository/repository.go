@@ -15,6 +15,7 @@ type User interface {
 }
 
 type Balance interface {
+	GetBalance(id string) (float64, error)
 	Withdraw(id string, amount float64) (float64, error)
 	Deposit(id string, amount float64) (float64, error)
 }

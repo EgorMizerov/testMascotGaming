@@ -4,6 +4,7 @@ import (
 	"errors"
 	"go.uber.org/zap"
 	"testMascotGaming/internal/auth"
+	"testMascotGaming/internal/client"
 	"testMascotGaming/internal/domain"
 	"testMascotGaming/internal/repository"
 	"time"
@@ -13,10 +14,11 @@ type AuthService struct {
 	repo    repository.User
 	log     *zap.Logger
 	manager auth.TokenManager
+	client  *client.Client
 }
 
-func NewAuthService(repo repository.User, log *zap.Logger, manager auth.TokenManager) *AuthService {
-	return &AuthService{repo: repo, log: log, manager: manager}
+func NewAuthService(repo repository.User, log *zap.Logger, manager auth.TokenManager, client *client.Client) *AuthService {
+	return &AuthService{repo: repo, log: log, manager: manager, client: client}
 }
 
 func (s *AuthService) SignUp(password, username string) error {
@@ -25,8 +27,12 @@ func (s *AuthService) SignUp(password, username string) error {
 	user.Username = username
 	user.Password = HashPassword(password)
 
-	_, err := s.repo.CreateUser(user)
+	id, err := s.repo.CreateUser(user)
+	if err != nil {
+		return err
+	}
 
+	err = s.client.SetPlayer(id, username, "egor")
 	return err
 }
 

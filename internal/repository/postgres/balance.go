@@ -44,3 +44,11 @@ func (r *BalancePostgres) Deposit(id string, amount float64) (float64, error) {
 
 	return balance, err
 }
+
+func (r *BalancePostgres) GetBalance(id string) (float64, error) {
+	var balance float64
+	query := fmt.Sprintf("SELECT balance FROM users WHERE id=$1")
+
+	err := r.db.Get(&balance, query, id)
+	return balance, err
+}

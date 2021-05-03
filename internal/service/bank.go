@@ -40,3 +40,7 @@ func (s *BankService) CreateBank(userId, currency string) (string, error) {
 func (s *BankService) GetAllBanks() ([]domain.Bank, error) {
 	return s.banks.GetAllBanks()
 }
+
+func (s *BankService) SetPlayer(userId, username string) error {
+	return s.client.SetPlayer(userId, username, "egor")
+}

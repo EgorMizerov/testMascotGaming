@@ -13,3 +13,6 @@ server:
 # Logger Settings
 logger:
   level: "debug"
+
+bankId: "egor"
+callerId: 43
