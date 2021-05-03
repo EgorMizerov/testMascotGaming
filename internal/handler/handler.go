@@ -31,11 +31,11 @@ func (h *Handler) GetRouter() *gin.Engine {
 	router := gin.New()
 	router.Use(gin.Logger())
 
-	router.GET("/ping", func(ctx *gin.Context) {
+	router.GET("/ping", h.corsMiddleware, func(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, "pong")
 	})
 
-	api := router.Group("/api")
+	api := router.Group("/api", h.corsMiddleware)
 	{
 		h.InitAuthRoutes(api)
 		h.InitUserRoutes(api)

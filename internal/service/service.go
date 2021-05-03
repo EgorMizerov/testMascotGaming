@@ -30,11 +30,16 @@ type Bank interface {
 	GetAllBanks() ([]domain.Bank, error)
 }
 
+type Game interface {
+	StartDemoGame(gameId, userId string) (string, string, error)
+}
+
 type Service struct {
 	User
 	Auth
 	Balance
 	Bank
+	Game
 }
 
 func NewService(repo *repository.Repository, log *zap.Logger, manager auth.TokenManager, client *client.Client) *Service {
@@ -43,6 +48,7 @@ func NewService(repo *repository.Repository, log *zap.Logger, manager auth.Token
 		User:    NewUserService(repo.User, log),
 		Balance: NewBalanceService(repo.Balance),
 		Bank:    NewBankService(repo.Bank, repo.User, client),
+		Game:    NewGameService(repo.Bank, client),
 	}
 }
 

@@ -41,7 +41,7 @@ func (h *Handler) StartSession(ctx *gin.Context) {
 		return
 	}
 
-	gameId, gameUrl, err := h.client.StartSession(id, input.GameID)
+	gameId, gameUrl, err := h.service.Game.StartDemoGame(input.GameID, id)
 	if err != nil {
 		errorMessage(ctx, err, http.StatusInternalServerError, err.Error())
 		return

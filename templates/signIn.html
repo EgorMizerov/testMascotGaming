@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SignIn</title>
+    <style>
+        .title {
+            text-align: center;
+        }
+
+        .registration {
+            margin: 0 auto;
+            padding-top: 30px;
+
+            max-width: 200px;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .btn {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div>
+    <div class="title">Авторизация</div>
+    <div class="registration">
+
+        <label for="username_input">Имя пользователя:</label>
+        <input type="text" name="username" id="username_input">
+
+        <br>
+
+        <label for="password_input">Пороль:</label>
+        <input type="password" name="password" id="password_input">
+
+        <button class="btn" onclick="signUp()">Sign-Up</button>
+
+    </div>
+</div>
+
+<script>
+    let api = "http://192.168.100.8:8000"
+
+    let username = document.getElementById("username_input");
+    let password = document.getElementById("password_input");
+
+    function signUp() {
+        username = username.value
+        password = password.value
+
+        serverSignIn(username, password)
+    }
+
+    function serverSignIn(username, password) {
+        let xhr = new XMLHttpRequest()
+
+        let body = `{"username":"${username}","password":"${password}"}`
+        let resp = {
+            "access_token": "",
+            "refresh_token": ""
+        }
+        xhr.open("POST", api+"/api/auth/sign-in", false)
+        xhr.send(body)
+
+        if (xhr.status != 200) {
+            alert(xhr.status + ": " + xhr.statusText)
+        } else {
+            resp = JSON.parse(xhr.responseText)
+
+            document.cookie = "mascot_access_token=" + resp.access_token
+
+            alert(resp.access_token)
+
+            console.log(document.cookie)
+            document.location.href = "/games.html"
+        }
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Games</title>
+  <style>
+    .gameBLock {
+      background-color: antiquewhite;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="username"></div>
+  <button onclick="serverGetGameList()">Click</button>
+</div>
+
+<script>
+  let api = "http://192.168.100.8:8000"
+
+  function serverGetGameList() {
+    let xhr = new XMLHttpRequest()
+
+    xhr.open("GET", api+"/api/games/", false)
+    xhr.send()
+
+    if (xhr.status != 200) {
+      alert(xhr.status + ": " + xhr.statusText)
+    } else {
+      let resp = JSON.parse(xhr.responseText)
+
+      for (i in resp.Result.Games) {
+        buildGame(resp.Result.Games[i])
+      }
+      console.log(resp.Result.Games)
+    }
+  }
+
+  function buildGame(game) {
+    let gameBlock = document.createElement("div")
+    gameBlock.classList.add("gameBLock")
+
+    let text = `Название игры: ${game.Name}\nID игры: ${game.Id}\nОписание игры: ${game.Description}\nТип игры: ${game.Type}'\n\n`
+    gameBlock.innerText = text
+
+    document.body.append(gameBlock)
+  }
+</script>
+</body>
+</html>
