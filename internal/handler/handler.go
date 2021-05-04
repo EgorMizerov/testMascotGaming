@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"io/ioutil"
@@ -57,6 +58,7 @@ func (h *Handler) GetRouter() *gin.Engine {
 			errorMessage(ctx, err, http.StatusBadRequest, err.Error())
 			return
 		}
+		fmt.Println(body)
 
 		var JSONRPCReq domain.JSONRPCRequest
 		err = json.Unmarshal(body, &JSONRPCReq)
@@ -68,6 +70,8 @@ func (h *Handler) GetRouter() *gin.Engine {
 		switch JSONRPCReq.Method {
 		case "getBalance":
 			h.getBalance(ctx, body)
+		case "withdrawAndDeposit":
+			h.withdrawAndDeposit(ctx, body)
 		}
 	})
 
@@ -97,4 +101,57 @@ func (h *Handler) getBalance(ctx *gin.Context, body []byte) {
 			"balance": fmtBalance,
 		},
 	})
+}
+
+func (h *Handler) withdrawAndDeposit(ctx *gin.Context, body []byte) {
+	var withdrawAndDepositReq withdrawAndDepositRequest
+
+	err := json.Unmarshal(body, &withdrawAndDepositReq)
+	if err != nil {
+		errorMessage(ctx, err, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	var userId = withdrawAndDepositReq.Params.PlayerName
+	var balance float64
+
+	if withdrawAndDepositReq.Params.Deposit != 0 {
+		balance, err = h.service.Balance.Deposit(userId, float64(withdrawAndDepositReq.Params.Deposit)/100)
+		if err != nil {
+			errorMessage(ctx, err, http.StatusInternalServerError, err.Error())
+			return
+		}
+	}
+
+	if withdrawAndDepositReq.Params.Withdraw != 0 {
+		balance, err = h.service.Balance.Withdraw(userId, float64(withdrawAndDepositReq.Params.Withdraw)/100)
+		if err != nil {
+			errorMessage(ctx, err, http.StatusInternalServerError, err.Error())
+			return
+		}
+	}
+
+	fmtBalance := int(balance * 100)
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"jsonrpc": "2.0",
+		"id":      withdrawAndDepositReq.Id,
+		"result": map[string]int{
+			"newBalance": fmtBalance,
+		},
+	})
+}
+
+type withdrawAndDepositRequest struct {
+	Jsonrpc string
+	Method  string
+	Id      int
+	Params  withdrawAndDepositParams
+}
+
+type withdrawAndDepositParams struct {
+	PlayerName     string `json:"playerName"`
+	Withdraw       int
+	Deposit        int
+	TransactionRef string `json:"transactionRef"`
 }
