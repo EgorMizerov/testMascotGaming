@@ -15,13 +15,23 @@
   <div class="userdata">
       <div id="name"></div>
       <div id="balance"></div>
-      <button onclick="deposit(1000)">Попольнить баланс на 1000р</button>
+
+      <br>
+
+      <label for="game_id">ID игры:</label>
+      <input id="game_id" type="text" value="merlins_tower">
+      <button onclick="startGame()">Начать игру</button>
+
+      <br>
+      <br>
+
+      <button onclick="deposit(100)">Попольнить баланс на 100$</button>
   </div>
   <button onclick="serverGetGameList()">Список игр</button>
 </div>
 
 <script>
-  let api = "http://192.168.100.8:8000"
+  let api = "http://185.139.70.93:8000"
   getUserData(getCookie("mascot_access_token"))
 
   function getUserData(token) {
@@ -62,11 +72,34 @@
   function buildGame(game) {
     let gameBlock = document.createElement("div")
     gameBlock.classList.add("gameBLock")
+    gameBlock.setAttribute("game_id", game.Id)
 
     let text = `Название игры: ${game.Name}\nID игры: ${game.Id}\nОписание игры: ${game.Description}\nТип игры: ${game.Type}'\n\n`
     gameBlock.innerText = text
 
     document.body.append(gameBlock)
+  }
+
+  function startGame() {
+      let GameId = document.getElementById("game_id").value
+
+      let xhr = new XMLHttpRequest()
+
+      let body = `{"game_id":"${GameId}"}`
+
+      xhr.open("POST", api+"/api/games/start")
+      xhr.setRequestHeader("Authorization", "Bearer " + getCookie("mascot_access_token"))
+      xhr.send(body)
+
+      xhr.onreadystatechange = function () {
+          if (xhr.status != 200) {
+              console.log(xhr.responseText)
+              alert(xhr.status + ": " + xhr.statusText)
+          } else {
+              let resp = JSON.parse(xhr.responseText)
+              document.location.href = resp.game_url
+          }
+      }
   }
 
   function getCookie(name) {
