@@ -5,6 +5,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 	"strings"
+	"testMascotGaming/internal/domain"
 )
 
 type TransactionPostgres struct {
@@ -22,6 +23,15 @@ func (r *TransactionPostgres) CreateTransaction(userId, ref string, withdraw, de
 	_, err := r.db.Exec(query, id, ref, userId, withdraw, deposit)
 
 	return id, err
+}
+
+func (r *TransactionPostgres) GetTransactionByRef(ref string) (domain.Transaction, error) {
+	var transaction domain.Transaction
+
+	query := fmt.Sprintf("SELECT * FROM transactions WHERE transactionRef=$1")
+	err := r.db.Get(&transaction, query, ref)
+
+	return transaction, err
 }
 
 func generateId() string {

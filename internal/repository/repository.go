@@ -27,6 +27,7 @@ type Bank interface {
 
 type Transaction interface {
 	CreateTransaction(userId, ref string, withdraw, deposit int) (string, error)
+	GetTransactionByRef(ref string) (domain.Transaction, error)
 }
 
 type Repository struct {

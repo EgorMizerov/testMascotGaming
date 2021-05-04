@@ -72,6 +72,8 @@ func (h *Handler) GetRouter() *gin.Engine {
 			h.getBalance(ctx, body)
 		case "withdrawAndDeposit":
 			h.withdrawAndDeposit(ctx, body)
+		case "rollbackTransaction":
+			h.rollbackTransaction(ctx, body)
 		}
 	})
 
@@ -161,5 +163,39 @@ type withdrawAndDepositParams struct {
 	PlayerName     string `json:"playerName"`
 	Withdraw       int
 	Deposit        int
+	TransactionRef string `json:"transactionRef"`
+}
+
+func (h *Handler) rollbackTransaction(ctx *gin.Context, body []byte) {
+	var rollbackTransactionReq rollbackTransactionRequest
+
+	err := json.Unmarshal(body, &rollbackTransactionReq)
+	if err != nil {
+		errorMessage(ctx, err, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	err = h.service.Rollback(rollbackTransactionReq.Params.TransactionRef)
+	if err != nil {
+		errorMessage(ctx, err, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"jsonrpc": "2.0",
+		"id":      rollbackTransactionReq.Id,
+		"result":  map[string]interface{}{},
+	})
+}
+
+type rollbackTransactionRequest struct {
+	Jsonrpc string
+	Method  string
+	Id      int
+	Params  rollbackTransactionParams
+}
+
+type rollbackTransactionParams struct {
+	PlayerName     string `json:"playerName"`
 	TransactionRef string `json:"transactionRef"`
 }

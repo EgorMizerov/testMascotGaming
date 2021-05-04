@@ -39,6 +39,7 @@ type Game interface {
 
 type Transaction interface {
 	CreateTransaction(userId, ref string, withdraw, deposit int) (string, error)
+	Rollback(ref string) error
 }
 
 type Service struct {
@@ -57,7 +58,7 @@ func NewService(repo *repository.Repository, log *zap.Logger, manager auth.Token
 		Balance:     NewBalanceService(repo.Balance),
 		Bank:        NewBankService(repo.Bank, repo.User, client),
 		Game:        NewGameService(repo.Bank, client),
-		Transaction: NewTransactionService(repo.Transaction),
+		Transaction: NewTransactionService(repo.Transaction, repo.Balance),
 	}
 }
 
