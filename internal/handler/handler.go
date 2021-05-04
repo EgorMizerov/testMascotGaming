@@ -115,6 +115,12 @@ func (h *Handler) withdrawAndDeposit(ctx *gin.Context, body []byte) {
 	var userId = withdrawAndDepositReq.Params.PlayerName
 	var balance float64
 
+	transactionId, err := h.service.Transaction.CreateTransaction(userId, withdrawAndDepositReq.Params.TransactionRef, withdrawAndDepositReq.Params.Withdraw, withdrawAndDepositReq.Params.Deposit)
+	if err != nil {
+		errorMessage(ctx, err, http.StatusInternalServerError, err.Error())
+		return
+	}
+
 	if withdrawAndDepositReq.Params.Deposit != 0 {
 		balance, err = h.service.Balance.Deposit(userId, float64(withdrawAndDepositReq.Params.Deposit)/100)
 		if err != nil {
@@ -132,13 +138,15 @@ func (h *Handler) withdrawAndDeposit(ctx *gin.Context, body []byte) {
 	}
 
 	fmtBalance := int(balance * 100)
+	result := map[string]interface{}{
+		"newBalance":    fmtBalance,
+		"transactionId": transactionId,
+	}
 
 	ctx.JSON(http.StatusOK, gin.H{
 		"jsonrpc": "2.0",
 		"id":      withdrawAndDepositReq.Id,
-		"result": map[string]int{
-			"newBalance": fmtBalance,
-		},
+		"result":  result,
 	})
 }
 

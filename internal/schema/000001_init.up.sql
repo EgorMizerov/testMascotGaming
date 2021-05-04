@@ -40,3 +40,18 @@ CREATE TABLE banks_users
         REFERENCES banks(id)
         ON DELETE CASCADE
 );
+
+CREATE TABLE transactions
+(
+    id varchar(255),
+    transactionRef varchar(255),
+    user_id uuid,
+    withdraw integer,
+    deposit integer,
+
+    PRIMARY KEY (id, transactionRef),
+
+    FOREIGN KEY (user_id)
+        REFERENCES users(id)
+        ON DELETE CASCADE
+);

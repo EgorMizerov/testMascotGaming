@@ -37,21 +37,27 @@ type Game interface {
 	StartGame(gameId, playerId string) (string, string, error)
 }
 
+type Transaction interface {
+	CreateTransaction(userId, ref string, withdraw, deposit int) (string, error)
+}
+
 type Service struct {
 	User
 	Auth
 	Balance
 	Bank
 	Game
+	Transaction
 }
 
 func NewService(repo *repository.Repository, log *zap.Logger, manager auth.TokenManager, client *client.Client) *Service {
 	return &Service{
-		Auth:    NewAuthService(repo.User, log, manager, client),
-		User:    NewUserService(repo.User, log),
-		Balance: NewBalanceService(repo.Balance),
-		Bank:    NewBankService(repo.Bank, repo.User, client),
-		Game:    NewGameService(repo.Bank, client),
+		Auth:        NewAuthService(repo.User, log, manager, client),
+		User:        NewUserService(repo.User, log),
+		Balance:     NewBalanceService(repo.Balance),
+		Bank:        NewBankService(repo.Bank, repo.User, client),
+		Game:        NewGameService(repo.Bank, client),
+		Transaction: NewTransactionService(repo.Transaction),
 	}
 }
 

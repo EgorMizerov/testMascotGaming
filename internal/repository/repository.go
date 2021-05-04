@@ -25,16 +25,22 @@ type Bank interface {
 	GetAllBanks() ([]domain.Bank, error)
 }
 
+type Transaction interface {
+	CreateTransaction(userId, ref string, withdraw, deposit int) (string, error)
+}
+
 type Repository struct {
 	User
 	Balance
 	Bank
+	Transaction
 }
 
 func NewRepository(db *sqlx.DB, log *zap.Logger) *Repository {
 	return &Repository{
-		User:    postgres.NewUserPostgres(db, log),
-		Balance: postgres.NewBalancePostgres(db),
-		Bank:    postgres.NewBankPostgres(db),
+		User:        postgres.NewUserPostgres(db, log),
+		Balance:     postgres.NewBalancePostgres(db),
+		Bank:        postgres.NewBankPostgres(db),
+		Transaction: postgres.NewTransactionPostgres(db),
 	}
 }
