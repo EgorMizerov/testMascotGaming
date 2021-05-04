@@ -10,7 +10,6 @@ func (h *Handler) InitGamesRoutes(api *gin.RouterGroup) {
 	{
 		games.GET("/", h.GetGameList)
 		games.POST("/start", h.StartSession)
-		//games.POST("/balance", h.GetBalance)
 	}
 }
 
@@ -53,21 +52,3 @@ func (h *Handler) StartSession(ctx *gin.Context) {
 		"game_url": gameUrl,
 	})
 }
-
-//func (h *Handler) GetBalance(ctx *gin.Context) {
-//	id, err := getUserID(ctx)
-//	if err != nil {
-//		errorMessage(ctx, err, http.StatusInternalServerError, err.Error())
-//		return
-//	}
-//
-//	balance, err := h.service.Game.GetBalance(id)
-//	if err != nil {
-//		errorMessage(ctx, err, http.StatusInternalServerError, err.Error())
-//		return
-//	}
-//
-//	ctx.JSON(http.StatusOK, gin.H{
-//		"balance": balance,
-//	})
-//}

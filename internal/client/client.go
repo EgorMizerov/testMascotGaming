@@ -87,7 +87,7 @@ func (c *Client) SetPlayer(userId, username, bankId string) error {
 	query := fmt.Sprintf(`{
 		"jsonrpc":"2.0",
 		"method":"Player.Set",
-		"id":"11",
+		"id":11,
 		"params":{
 			"Id":"%s",
 			"Nick":"%s",
@@ -112,13 +112,12 @@ func (c *Client) StartSession(playerId, gameId string) (string, string, error) {
 	query := fmt.Sprintf(`{
 		"jsonrpc":"2.0",
 		"method":"Session.Create",
-		"id":"11",
+		"id":11,
 		"params":{
 			"PlayerId":"%s",
 			"GameId":"%s"
 		}
 	}`, playerId, gameId)
-	fmt.Println(query)
 
 	req, err := http.NewRequest("POST", c.api, strings.NewReader(query))
 	if err != nil {
@@ -134,11 +133,10 @@ func (c *Client) StartSession(playerId, gameId string) (string, string, error) {
 	}
 
 	r, _ := ioutil.ReadAll(resp.Body)
-
 	fmt.Println(string(r))
 
 	var SSResp domain.StartSessionResponse
-	err = json.NewDecoder(resp.Body).Decode(&SSResp)
+	err = json.Unmarshal(r, &SSResp)
 
 	return SSResp.Result.SessionId, SSResp.Result.SessionUrl, err
 }
@@ -154,7 +152,6 @@ func (c *Client) StartDemoSession(bankGroupId, gameId string) (string, string, e
 			"StartBalance": 10000
 		}
 	}`, bankGroupId, gameId)
-	fmt.Println(query)
 
 	req, err := http.NewRequest("POST", c.api, strings.NewReader(query))
 	if err != nil {
@@ -170,11 +167,10 @@ func (c *Client) StartDemoSession(bankGroupId, gameId string) (string, string, e
 	}
 
 	r, _ := ioutil.ReadAll(resp.Body)
-
 	fmt.Println(string(r))
 
 	var SSResp domain.StartSessionResponse
-	err = json.NewDecoder(resp.Body).Decode(&SSResp)
+	err = json.Unmarshal(r, &SSResp)
 
 	return SSResp.Result.SessionId, SSResp.Result.SessionUrl, err
 }

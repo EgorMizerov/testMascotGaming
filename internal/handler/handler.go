@@ -1,11 +1,10 @@
 package handler
 
 import (
-	"io/ioutil"
 	"encoding/json"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
+	"io/ioutil"
 	"net/http"
 	"testMascotGaming/internal/auth"
 	client2 "testMascotGaming/internal/client"
@@ -50,53 +49,52 @@ func (h *Handler) GetRouter() *gin.Engine {
 	}
 
 	router.POST("/", func(ctx *gin.Context) {
-		var JSONRPCReq domain.JSONRPCRequest
-		var body = ctx.Request.Body
+		ctx.Header("Content-Type", "application/json")
+		ctx.Header("Accept", "application/json")
 
-		req, err := ioutil.ReadAll(body)
+		body, err := ioutil.ReadAll(ctx.Request.Body)
 		if err != nil {
 			errorMessage(ctx, err, http.StatusBadRequest, err.Error())
 			return
 		}
 
-		fmt.Println(string(req))
-
-		err = json.Unmarshal(req, &JSONRPCReq)
+		var JSONRPCReq domain.JSONRPCRequest
+		err = json.Unmarshal(body, &JSONRPCReq)
 		if err != nil {
 			errorMessage(ctx, err, http.StatusBadRequest, err.Error())
+			return
 		}
 
 		switch JSONRPCReq.Method {
 		case "getBalance":
-			h.log.Debug("getBalance")
-			var getBalanceReq domain2.GetBalanceRequest
-
-			err = json.Unmarshal(req, &getBalanceReq)
-			fmt.Println(getBalanceReq)
-			if err != nil {
-				errorMessage(ctx, err, http.StatusBadRequest, err.Error())
-				return
-			}
-
-			balance, err := h.service.Balance.GetBalance(getBalanceReq.Params.PlayerName)
-			if err != nil {
-				errorMessage(ctx, err, http.StatusInternalServerError, err.Error())
-				return
-			}
-
-			h.log.Debug("",
-				zap.Float64("received Balance", balance),
-				zap.Int("balance sent", int(balance*100)))
-
-			ctx.JSON(http.StatusOK, gin.H{
-				"jsonrpc": "2.0",
-				"id":      getBalanceReq.Id,
-				"result": map[string]int{
-					"balance": int(balance * 100),
-				},
-			})
+			h.getBalance(ctx, body)
 		}
 	})
 
 	return router
+}
+
+func (h *Handler) getBalance(ctx *gin.Context, body []byte) {
+	var getBalanceReq domain2.GetBalanceRequest
+
+	err := json.Unmarshal(body, &getBalanceReq)
+	if err != nil {
+		errorMessage(ctx, err, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	balance, err := h.service.Balance.GetBalance(getBalanceReq.Params.PlayerName)
+	if err != nil {
+		errorMessage(ctx, err, http.StatusInternalServerError, err.Error())
+		return
+	}
+	fmtBalance := int(balance * 100)
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"jsonrpc": "2.0",
+		"id":      getBalanceReq.Id,
+		"result": map[string]int{
+			"balance": fmtBalance,
+		},
+	})
 }
