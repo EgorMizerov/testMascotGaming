@@ -15,4 +15,3 @@ logger:
   level: "debug"
 
 bankId: "egor"
-callerId: 43

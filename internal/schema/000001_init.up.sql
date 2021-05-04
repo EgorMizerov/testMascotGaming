@@ -16,7 +16,9 @@ CREATE TABLE banks
     id uuid,
     user_id uuid,
     currency varchar(5),
+
     PRIMARY KEY (id),
+
     FOREIGN KEY (user_id)
         REFERENCES users(id)
         ON DELETE CASCADE
@@ -27,10 +29,13 @@ CREATE TABLE banks_users
     id uuid,
     user_id uuid,
     bank_id uuid,
+
     PRIMARY KEY (id),
+
     FOREIGN KEY (user_id)
         REFERENCES users(id)
         ON DELETE CASCADE,
+
     FOREIGN KEY (bank_id)
         REFERENCES banks(id)
         ON DELETE CASCADE
