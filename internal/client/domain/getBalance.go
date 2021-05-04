@@ -3,7 +3,7 @@ package domain
 type GetBalanceRequest struct {
 	Jsonrpc string
 	Method  string
-	Id      string
+	Id      int
 	Params  GetBalanceRequestParams
 }
 

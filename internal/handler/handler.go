@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"io/ioutil"
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -49,21 +50,29 @@ func (h *Handler) GetRouter() *gin.Engine {
 	}
 
 	router.POST("/", func(ctx *gin.Context) {
-		var req domain.JSONRPCRequest
+		var JSONRPCReq domain.JSONRPCRequest
+		var body = ctx.Request.Body
 
-		err := json.NewDecoder(ctx.Request.Body).Decode(&req)
+		req, err := ioutil.ReadAll(body)
 		if err != nil {
 			errorMessage(ctx, err, http.StatusBadRequest, err.Error())
 			return
 		}
 
-		fmt.Println(req)
+		fmt.Println(string(req))
 
-		switch req.Method {
+		err = json.Unmarshal(req, &JSONRPCReq)
+		if err != nil {
+			errorMessage(ctx, err, http.StatusBadRequest, err.Error())
+		}
+
+		switch JSONRPCReq.Method {
 		case "getBalance":
+			h.log.Debug("getBalance")
 			var getBalanceReq domain2.GetBalanceRequest
 
-			err = json.NewDecoder(ctx.Request.Body).Decode(&getBalanceReq)
+			err = json.Unmarshal(req, &getBalanceReq)
+			fmt.Println(getBalanceReq)
 			if err != nil {
 				errorMessage(ctx, err, http.StatusBadRequest, err.Error())
 				return
