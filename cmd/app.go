@@ -74,6 +74,6 @@ func Run() {
 }
 
 func ParseConfig() error {
-	viper.SetConfigFile("./internal/config/config.yaml")
+	viper.SetConfigFile("./config.yaml")
 	return viper.ReadInConfig()
 }
