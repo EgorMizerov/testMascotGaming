@@ -2,7 +2,6 @@ package postgres
 
 import (
 	"database/sql"
-	"fmt"
 	"github.com/jmoiron/sqlx"
 )
 
@@ -15,7 +14,7 @@ func NewBalancePostgres(db *sqlx.DB) *BalancePostgres {
 }
 
 func (r *BalancePostgres) Withdraw(id string, amount float64) (float64, error) {
-	query := fmt.Sprintf("UPDATE users SET balance=balance-$1 WHERE id=$2 RETURNING balance")
+	query := "UPDATE users SET balance=balance-$1 WHERE id=$2 RETURNING balance"
 
 	_, err := r.db.Exec(query, amount, id)
 	if err != nil {
@@ -24,14 +23,14 @@ func (r *BalancePostgres) Withdraw(id string, amount float64) (float64, error) {
 
 	var balance float64
 
-	query = fmt.Sprintf("SELECT balance FROM users WHERE id=$1")
+	query = "SELECT balance FROM users WHERE id=$1"
 	err = r.db.Get(&balance, query, id)
 
 	return balance, err
 }
 
 func (r *BalancePostgres) Deposit(id string, amount float64) (float64, error) {
-	query := fmt.Sprintf("UPDATE users SET balance=balance+$1 WHERE id=$2 RETURNING balance")
+	query := "UPDATE users SET balance=balance+$1 WHERE id=$2 RETURNING balance"
 
 	_, err := r.db.Exec(query, amount, id)
 	if err != nil {
@@ -40,7 +39,7 @@ func (r *BalancePostgres) Deposit(id string, amount float64) (float64, error) {
 
 	var balance float64
 
-	query = fmt.Sprintf("SELECT balance FROM users WHERE id=$1")
+	query = "SELECT balance FROM users WHERE id=$1"
 	err = r.db.Get(&balance, query, id)
 
 	return balance, err
@@ -48,14 +47,14 @@ func (r *BalancePostgres) Deposit(id string, amount float64) (float64, error) {
 
 func (r *BalancePostgres) GetBalance(id string) (float64, error) {
 	var balance float64
-	query := fmt.Sprintf("SELECT balance FROM users WHERE id=$1")
+	query := "SELECT balance FROM users WHERE id=$1"
 
 	err := r.db.Get(&balance, query, id)
 	return balance, err
 }
 
-func (r *BalancePostgres) DepositDuringTransaction(tx *sql.Tx, id string, amount float64) (float64, error){
-	query := fmt.Sprintf("UPDATE users SET balance=balance+$1 WHERE id=$2 RETURNING balance;")
+func (r *BalancePostgres) DepositDuringTransaction(tx *sql.Tx, id string, amount float64) (float64, error) {
+	query := "UPDATE users SET balance=balance+$1 WHERE id=$2 RETURNING balance"
 
 	_, err := tx.Exec(query, amount, id)
 	if err != nil {
@@ -64,14 +63,14 @@ func (r *BalancePostgres) DepositDuringTransaction(tx *sql.Tx, id string, amount
 
 	var balance float64
 
-	query = fmt.Sprintf("SELECT balance FROM users WHERE id=$1;")
+	query = "SELECT balance FROM users WHERE id=$1"
 	err = tx.QueryRow(query, id).Scan(&balance)
 
 	return balance, err
 }
 
 func (r *BalancePostgres) WithdrawDuringTransaction(tx *sql.Tx, id string, amount float64) (float64, error) {
-	query := fmt.Sprintf("UPDATE users SET balance=balance-$1 WHERE id=$2 RETURNING balance")
+	query := "UPDATE users SET balance=balance-$1 WHERE id=$2 RETURNING balance"
 
 	_, err := tx.Exec(query, amount, id)
 	if err != nil {
@@ -80,7 +79,7 @@ func (r *BalancePostgres) WithdrawDuringTransaction(tx *sql.Tx, id string, amoun
 
 	var balance float64
 
-	query = fmt.Sprintf("SELECT balance FROM users WHERE id=$1")
+	query = "SELECT balance FROM users WHERE id=$1"
 	err = tx.QueryRow(query, id).Scan(&balance)
 
 	return balance, err

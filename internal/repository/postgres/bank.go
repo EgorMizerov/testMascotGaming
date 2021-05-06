@@ -1,7 +1,6 @@
 package postgres
 
 import (
-	"fmt"
 	"github.com/EgorMizerov/testMascotGaming/internal/domain"
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
@@ -21,7 +20,7 @@ func (r *BankPostgres) CreateBank(userId, bankId, currency string) error {
 		return err
 	}
 
-	query := fmt.Sprintf("INSERT INTO banks (id, user_id, currency) VALUES ($1, $2, $3)")
+	query := "INSERT INTO banks (id, user_id, currency) VALUES ($1, $2, $3)"
 	_, err = tx.Exec(query, bankId, userId, currency)
 	if err != nil {
 		tx.Rollback()
@@ -29,7 +28,7 @@ func (r *BankPostgres) CreateBank(userId, bankId, currency string) error {
 	}
 
 	id := uuid.New()
-	query = fmt.Sprintf("INSERT INTO banks_users (id, user_id, bank_id) VALUES ($1, $2, $3)")
+	query = "INSERT INTO banks_users (id, user_id, bank_id) VALUES ($1, $2, $3)"
 	_, err = tx.Exec(query, id.String(), userId, bankId)
 	if err != nil {
 		tx.Rollback()
@@ -44,7 +43,7 @@ func (r *BankPostgres) CreateBank(userId, bankId, currency string) error {
 func (r *BankPostgres) GetAllBanks() ([]domain.Bank, error) {
 	var banks []domain.Bank
 
-	query := fmt.Sprintf("SELECT * FROM banks")
+	query := "SELECT * FROM banks"
 	err := r.db.Select(&banks, query)
 
 	return banks, err

@@ -2,7 +2,6 @@ package postgres
 
 import (
 	"database/sql"
-	"fmt"
 	"github.com/EgorMizerov/testMascotGaming/internal/domain"
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
@@ -20,7 +19,7 @@ func NewTransactionPostgres(db *sqlx.DB) *TransactionPostgres {
 func (r *TransactionPostgres) CreateTransaction(userId, ref string, withdraw, deposit int) (string, error) {
 	var id = generateId()
 
-	query := fmt.Sprintf("INSERT INTO transactions (id, transactionRef, user_id, withdraw, deposit) VALUES ($1, $2, $3, $4, $5)")
+	query := "INSERT INTO transactions (id, transactionRef, user_id, withdraw, deposit) VALUES ($1, $2, $3, $4, $5)"
 	_, err := r.db.Exec(query, id, ref, userId, withdraw, deposit)
 
 	return id, err
@@ -29,7 +28,7 @@ func (r *TransactionPostgres) CreateTransaction(userId, ref string, withdraw, de
 func (r *TransactionPostgres) GetTransactionByRef(ref string) (domain.Transaction, error) {
 	var transaction domain.Transaction
 
-	query := fmt.Sprintf("SELECT * FROM transactions WHERE transactionRef=$1")
+	query := "SELECT * FROM transactions WHERE transactionRef=$1"
 	err := r.db.Get(&transaction, query, ref)
 
 	return transaction, err
@@ -49,7 +48,7 @@ func (r *TransactionPostgres) BeginTransaction() (*sql.Tx, error) {
 func (r *TransactionPostgres) CreateTransactionDuringTransaction(tx *sql.Tx, userId, ref string, withdraw, deposit int) (string, error) {
 	var id = generateId()
 
-	query := fmt.Sprintf("INSERT INTO transactions (id, transactionRef, user_id, withdraw, deposit) VALUES ($1, $2, $3, $4, $5);")
+	query := "INSERT INTO transactions (id, transactionRef, user_id, withdraw, deposit) VALUES ($1, $2, $3, $4, $5)"
 	_, err := tx.Exec(query, id, ref, userId, withdraw, deposit)
 
 	return id, err
