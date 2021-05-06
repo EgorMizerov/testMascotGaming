@@ -1,6 +1,7 @@
 package postgres
 
 import (
+	"database/sql"
 	"fmt"
 	"github.com/jmoiron/sqlx"
 )
@@ -50,5 +51,37 @@ func (r *BalancePostgres) GetBalance(id string) (float64, error) {
 	query := fmt.Sprintf("SELECT balance FROM users WHERE id=$1")
 
 	err := r.db.Get(&balance, query, id)
+	return balance, err
+}
+
+func (r *BalancePostgres) DepositDuringTransaction(tx *sql.Tx, id string, amount float64) (float64, error){
+	query := fmt.Sprintf("UPDATE users SET balance=balance+$1 WHERE id=$2 RETURNING balance;")
+
+	_, err := tx.Exec(query, amount, id)
+	if err != nil {
+		return 0, err
+	}
+
+	var balance float64
+
+	query = fmt.Sprintf("SELECT balance FROM users WHERE id=$1;")
+	err = tx.QueryRow(query, id).Scan(&balance)
+
+	return balance, err
+}
+
+func (r *BalancePostgres) WithdrawDuringTransaction(tx *sql.Tx, id string, amount float64) (float64, error) {
+	query := fmt.Sprintf("UPDATE users SET balance=balance-$1 WHERE id=$2 RETURNING balance")
+
+	_, err := tx.Exec(query, amount, id)
+	if err != nil {
+		return 0, err
+	}
+
+	var balance float64
+
+	query = fmt.Sprintf("SELECT balance FROM users WHERE id=$1")
+	err = tx.QueryRow(query, id).Scan(&balance)
+
 	return balance, err
 }

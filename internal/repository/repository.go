@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"database/sql"
 	"github.com/jmoiron/sqlx"
 	"go.uber.org/zap"
 	"testMascotGaming/internal/domain"
@@ -18,6 +19,8 @@ type Balance interface {
 	GetBalance(id string) (float64, error)
 	Withdraw(id string, amount float64) (float64, error)
 	Deposit(id string, amount float64) (float64, error)
+	DepositDuringTransaction(tx *sql.Tx, id string, amount float64) (float64, error)
+	WithdrawDuringTransaction(tx *sql.Tx, id string, amount float64) (float64, error)
 }
 
 type Bank interface {
@@ -28,6 +31,8 @@ type Bank interface {
 type Transaction interface {
 	CreateTransaction(userId, ref string, withdraw, deposit int) (string, error)
 	GetTransactionByRef(ref string) (domain.Transaction, error)
+	BeginTransaction() (*sql.Tx, error)
+	CreateTransactionDuringTransaction(tx *sql.Tx, userId, ref string, withdraw, deposit int) (string, error)
 }
 
 type Repository struct {

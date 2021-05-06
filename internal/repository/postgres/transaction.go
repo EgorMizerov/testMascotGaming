@@ -1,6 +1,7 @@
 package postgres
 
 import (
+	"database/sql"
 	"fmt"
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
@@ -39,4 +40,17 @@ func generateId() string {
 
 	args := strings.Split(id, "-")
 	return "2:" + strings.Join(args[0:3], "")
+}
+
+func (r *TransactionPostgres) BeginTransaction() (*sql.Tx, error) {
+	return r.db.Begin()
+}
+
+func (r *TransactionPostgres) CreateTransactionDuringTransaction(tx *sql.Tx, userId, ref string, withdraw, deposit int) (string, error) {
+	var id = generateId()
+
+	query := fmt.Sprintf("INSERT INTO transactions (id, transactionRef, user_id, withdraw, deposit) VALUES ($1, $2, $3, $4, $5);")
+	_, err := tx.Exec(query, id, ref, userId, withdraw, deposit)
+
+	return id, err
 }

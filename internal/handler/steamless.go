@@ -44,26 +44,14 @@ func (h *Handler) withdrawAndDeposit(ctx *gin.Context, body []byte) {
 	var userId = withdrawAndDepositReq.Params.PlayerName
 	var balance float64
 
-	transactionId, err := h.service.Transaction.CreateTransaction(userId, withdrawAndDepositReq.Params.TransactionRef, withdrawAndDepositReq.Params.Withdraw, withdrawAndDepositReq.Params.Deposit)
+	balance, transactionId, err := h.service.Transaction.WithdrawAndDeposit(
+		userId,
+		withdrawAndDepositReq.Params.TransactionRef,
+		withdrawAndDepositReq.Params.Deposit,
+		withdrawAndDepositReq.Params.Withdraw)
 	if err != nil {
 		errorMessage(ctx, err, http.StatusInternalServerError, err.Error())
 		return
-	}
-
-	if withdrawAndDepositReq.Params.Deposit != 0 {
-		balance, err = h.service.Balance.Deposit(userId, float64(withdrawAndDepositReq.Params.Deposit)/100)
-		if err != nil {
-			errorMessage(ctx, err, http.StatusInternalServerError, err.Error())
-			return
-		}
-	}
-
-	if withdrawAndDepositReq.Params.Withdraw != 0 {
-		balance, err = h.service.Balance.Withdraw(userId, float64(withdrawAndDepositReq.Params.Withdraw)/100)
-		if err != nil {
-			errorMessage(ctx, err, http.StatusInternalServerError, err.Error())
-			return
-		}
 	}
 
 	fmtBalance := int(balance * 100)

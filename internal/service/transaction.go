@@ -44,3 +44,38 @@ func (s *TransactionService) Rollback(ref string) error {
 
 	return err
 }
+
+func (s *TransactionService) WithdrawAndDeposit(userId, transactionRef string, deposit, withdraw int) (float64, string, error) {
+	tx, err := s.repo.BeginTransaction()
+	if err != nil {
+		return 0, "", err
+	}
+
+	transactionId, err := s.repo.CreateTransactionDuringTransaction(tx, userId, transactionRef, withdraw, deposit)
+	if err != nil {
+		tx.Rollback()
+		return 0, "", err
+	}
+
+	var balance float64
+
+	if deposit != 0 {
+		balance, err = s.balance.DepositDuringTransaction(tx, userId, float64(deposit)/100)
+		if err != nil {
+			tx.Rollback()
+			return 0, "", err
+		}
+	}
+
+	if withdraw != 0 {
+		balance, err = s.balance.WithdrawDuringTransaction(tx, userId, float64(withdraw)/100)
+		if err != nil {
+			tx.Rollback()
+			return 0, "", err
+		}
+	}
+
+	tx.Commit()
+
+	return balance, transactionId, err
+}

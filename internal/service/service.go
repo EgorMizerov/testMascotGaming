@@ -40,6 +40,7 @@ type Game interface {
 type Transaction interface {
 	CreateTransaction(userId, ref string, withdraw, deposit int) (string, error)
 	Rollback(ref string) error
+	WithdrawAndDeposit(userId, transactionRef string, deposit, withdraw int) (float64, string, error)
 }
 
 type Service struct {
