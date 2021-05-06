@@ -1,6 +1,6 @@
 package service
 
-import "testMascotGaming/internal/repository"
+import "github.com/EgorMizerov/testMascotGaming/internal/repository"
 
 type BalanceService struct {
 	repo repository.Balance

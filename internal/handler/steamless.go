@@ -2,9 +2,9 @@ package handler
 
 import (
 	"encoding/json"
+	domain2 "github.com/EgorMizerov/testMascotGaming/internal/client/domain"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	domain2 "testMascotGaming/internal/client/domain"
 )
 
 func (h *Handler) getBalance(ctx *gin.Context, body []byte) {

@@ -1,9 +1,9 @@
 package handler
 
 import (
+	"github.com/EgorMizerov/testMascotGaming/pkg/logger"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
-	"testMascotGaming/pkg/logger"
 )
 
 var log, _ = logger.NewLogger("debug")

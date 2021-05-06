@@ -2,9 +2,9 @@ package postgres
 
 import (
 	"fmt"
+	"github.com/EgorMizerov/testMascotGaming/internal/domain"
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
-	"testMascotGaming/internal/domain"
 )
 
 type BankPostgres struct {

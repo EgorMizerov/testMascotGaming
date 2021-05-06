@@ -2,10 +2,10 @@ package repository
 
 import (
 	"database/sql"
+	"github.com/EgorMizerov/testMascotGaming/internal/domain"
+	"github.com/EgorMizerov/testMascotGaming/internal/repository/postgres"
 	"github.com/jmoiron/sqlx"
 	"go.uber.org/zap"
-	"testMascotGaming/internal/domain"
-	"testMascotGaming/internal/repository/postgres"
 )
 
 type User interface {

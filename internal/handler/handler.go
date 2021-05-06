@@ -3,14 +3,14 @@ package handler
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/EgorMizerov/testMascotGaming/internal/auth"
+	client2 "github.com/EgorMizerov/testMascotGaming/internal/client"
+	"github.com/EgorMizerov/testMascotGaming/internal/domain"
+	"github.com/EgorMizerov/testMascotGaming/internal/service"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"io/ioutil"
 	"net/http"
-	"testMascotGaming/internal/auth"
-	client2 "testMascotGaming/internal/client"
-	"testMascotGaming/internal/domain"
-	"testMascotGaming/internal/service"
 )
 
 type Handler struct {

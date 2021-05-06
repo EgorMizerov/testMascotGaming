@@ -2,10 +2,10 @@ package postgres
 
 import (
 	"fmt"
+	"github.com/EgorMizerov/testMascotGaming/internal/domain"
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 	"go.uber.org/zap"
-	"testMascotGaming/internal/domain"
 )
 
 type UserPostgres struct {

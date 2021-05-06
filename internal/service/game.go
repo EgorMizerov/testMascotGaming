@@ -1,9 +1,9 @@
 package service
 
 import (
+	"github.com/EgorMizerov/testMascotGaming/internal/client"
+	"github.com/EgorMizerov/testMascotGaming/internal/repository"
 	"github.com/spf13/viper"
-	"testMascotGaming/internal/client"
-	"testMascotGaming/internal/repository"
 )
 
 type GameService struct {

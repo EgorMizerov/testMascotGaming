@@ -1,8 +1,8 @@
 package service
 
 import (
-	"testMascotGaming/internal/domain"
-	"testMascotGaming/internal/repository"
+	"github.com/EgorMizerov/testMascotGaming/internal/domain"
+	"github.com/EgorMizerov/testMascotGaming/internal/repository"
 )
 
 type TransactionService struct {

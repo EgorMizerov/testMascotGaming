@@ -2,11 +2,11 @@ package service
 
 import (
 	"errors"
+	"github.com/EgorMizerov/testMascotGaming/internal/auth"
+	"github.com/EgorMizerov/testMascotGaming/internal/client"
+	"github.com/EgorMizerov/testMascotGaming/internal/domain"
+	"github.com/EgorMizerov/testMascotGaming/internal/repository"
 	"go.uber.org/zap"
-	"testMascotGaming/internal/auth"
-	"testMascotGaming/internal/client"
-	"testMascotGaming/internal/domain"
-	"testMascotGaming/internal/repository"
 	"time"
 )
 

@@ -3,20 +3,20 @@ package cmd
 import (
 	"context"
 	"fmt"
+	"github.com/EgorMizerov/testMascotGaming/internal/auth"
+	"github.com/EgorMizerov/testMascotGaming/internal/client"
+	"github.com/EgorMizerov/testMascotGaming/internal/handler"
+	"github.com/EgorMizerov/testMascotGaming/internal/repository"
+	"github.com/EgorMizerov/testMascotGaming/internal/repository/postgres"
+	"github.com/EgorMizerov/testMascotGaming/internal/service"
+	"github.com/EgorMizerov/testMascotGaming/pkg/logger"
+	"github.com/EgorMizerov/testMascotGaming/pkg/server"
 	"github.com/joho/godotenv"
 	"github.com/spf13/viper"
 	"log"
 	"os"
 	"os/signal"
 	"syscall"
-	"testMascotGaming/internal/auth"
-	"testMascotGaming/internal/client"
-	"testMascotGaming/internal/handler"
-	"testMascotGaming/internal/repository"
-	"testMascotGaming/internal/repository/postgres"
-	"testMascotGaming/internal/service"
-	"testMascotGaming/pkg/logger"
-	"testMascotGaming/pkg/server"
 )
 
 func Run() {

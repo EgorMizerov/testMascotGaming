@@ -1,9 +1,9 @@
 package service
 
 import (
-	"testMascotGaming/internal/client"
-	"testMascotGaming/internal/domain"
-	"testMascotGaming/internal/repository"
+	"github.com/EgorMizerov/testMascotGaming/internal/client"
+	"github.com/EgorMizerov/testMascotGaming/internal/domain"
+	"github.com/EgorMizerov/testMascotGaming/internal/repository"
 )
 
 type BankService struct {

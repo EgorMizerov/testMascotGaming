@@ -4,12 +4,12 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
+	"github.com/EgorMizerov/testMascotGaming/internal/client/domain"
 	"github.com/google/uuid"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"strings"
-	"testMascotGaming/internal/client/domain"
 )
 
 type Client struct {

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"testMascotGaming/cmd"
+	"github.com/EgorMizerov/testMascotGaming/cmd"
 )
 
 type Reply struct {

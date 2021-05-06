@@ -1,9 +1,9 @@
 package service
 
 import (
+	"github.com/EgorMizerov/testMascotGaming/internal/domain"
+	"github.com/EgorMizerov/testMascotGaming/internal/repository"
 	"go.uber.org/zap"
-	"testMascotGaming/internal/domain"
-	"testMascotGaming/internal/repository"
 )
 
 type UserService struct {

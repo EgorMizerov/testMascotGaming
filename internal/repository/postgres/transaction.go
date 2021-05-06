@@ -3,10 +3,10 @@ package postgres
 import (
 	"database/sql"
 	"fmt"
+	"github.com/EgorMizerov/testMascotGaming/internal/domain"
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 	"strings"
-	"testMascotGaming/internal/domain"
 )
 
 type TransactionPostgres struct {
